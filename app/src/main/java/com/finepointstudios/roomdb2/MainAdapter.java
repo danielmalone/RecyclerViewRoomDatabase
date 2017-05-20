@@ -28,7 +28,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(MainAdapter.ViewHolder holder, int position) {
-        holder.mFirstName.setText(mDataset.get(position).getFirstName());
+        holder.mFirstName.setText("id: " + mDataset.get(position).getAsdf());
     }
 
     @Override

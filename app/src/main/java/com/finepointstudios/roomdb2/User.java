@@ -11,17 +11,17 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class User {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int asdf;
 
     @ColumnInfo(name = "first_name")
     private String firstName;
 
-    public int getId() {
-        return id;
+    public int getAsdf() {
+        return asdf;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAsdf(int asdf) {
+        this.asdf = asdf;
     }
 
     public String getFirstName() {
