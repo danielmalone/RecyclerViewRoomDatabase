@@ -4,10 +4,11 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.View;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private List<User> mDataset;
+    private FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +31,24 @@ public class MainActivity extends AppCompatActivity {
 
         mContext = this;
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
 
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new InsertData().execute();
+            }
+        });
+
+        new InsertData().execute();
+    }
+
+    private void loadRecyclerView() {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mAdapter = new MainAdapter(mDataset);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-        new InsertData().execute();
     }
 
     private class InsertData extends AsyncTask<Void, Void, Void> {
@@ -55,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             new GetData().execute();
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -64,12 +79,13 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             mDataset = db.userDao().getAll();
 
-            for (int i = 0; i < mDataset.size(); i++) {
-                User user = mDataset.get(i);
-                Log.d(TAG, "doInBackground: User: " + user.getFirstName());
-            }
-
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            loadRecyclerView();
         }
     }
 }
